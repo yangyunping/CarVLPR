@@ -11,9 +11,9 @@ namespace GetCarInfo
         private CHCNetSDK.MSGCallBack_V31 m_falarmData_V31 = null;// //报警回调函数
         private Int32 m_lUserID = -1;//登录返回值
         private Int32 iListenHandle = -1;//监听返回值
-        private CHCNetSDK.MSGCallBack m_falarmData = null;
-        CHCNetSDK.REALDATACALLBACK RealData = null;
-        private Int32 m_lRealHandle = -1;
+        private CHCNetSDK.MSGCallBack m_falarmData = null;//回调函数
+        CHCNetSDK.REALDATACALLBACK RealData = null;//预览回调
+        private Int32 m_lRealHandle = -1;//预览装填  -1为没有
         private Int32 alarmChan = -1;//布防返回值
         public delegate void UpdateListBoxCallback(string strAlarmTime, string strDevIP, string strAlarmMsg);
         CHCNetSDK.NET_VCA_TRAVERSE_PLANE m_struTraversePlane = new CHCNetSDK.NET_VCA_TRAVERSE_PLANE();
@@ -503,6 +503,7 @@ namespace GetCarInfo
 
         private void btnListenBegin_Click(object sender, EventArgs e)
         {
+            //开始监听
             if (m_falarmData == null)
             {
                 m_falarmData = new CHCNetSDK.MSGCallBack(MsgCallback);
@@ -522,6 +523,7 @@ namespace GetCarInfo
 
         private void btnListenEnd_Click(object sender, EventArgs e)
         {
+            //停止监听
             if (!CHCNetSDK.NET_DVR_StopListen_V30(iListenHandle))
             {
                 MessageBox.Show(CHCNetSDK.NET_DVR_GetLastError().ToString());
@@ -536,7 +538,7 @@ namespace GetCarInfo
 
         private void btnView_Click(object sender, EventArgs e)
         {
-
+            //开始预览
             if (m_lUserID < 0)
             {
                 MessageBox.Show("Please login the device firstly");
@@ -567,6 +569,8 @@ namespace GetCarInfo
                     MessageBox.Show(str);
                     return;
                 }
+                btnView.Enabled = false;
+                btnCancelView.Enabled = true;
             }
         }
         public void RealDataCallBack(Int32 lRealHandle, UInt32 dwDataType, IntPtr pBuffer, UInt32 dwBufSize, IntPtr pUser)
@@ -586,14 +590,10 @@ namespace GetCarInfo
 
         private void btnPic_Click(object sender, EventArgs e)
         {
+            //开始截图，图片质量
             CHCNetSDK.NET_DVR_JPEGPARA lpPreviewInfo = new CHCNetSDK.NET_DVR_JPEGPARA();
             lpPreviewInfo.wPicQuality = 0;
-            lpPreviewInfo.wPicSize = 0xff;
-
-            if (File.Exists(@"C:\Users\EMEWE\Desktop\1.jpg"))
-            {
-                File.Delete(@"C:\Users\EMEWE\Desktop\1.jpg");
-            }
+            lpPreviewInfo.wPicSize = 19;
 
             if (CHCNetSDK.NET_DVR_CaptureJPEGPicture(m_lUserID, 36, ref lpPreviewInfo, @"C:\Users\EMEWE\Desktop\1.jpg"))
             {
@@ -603,15 +603,18 @@ namespace GetCarInfo
             {
                 MessageBox.Show(CHCNetSDK.NET_DVR_GetLastError().ToString());
             }
+            btnPic.Enabled = false;
+            btnCancelPic.Enabled = true;
         }
 
         private void btnAlarmChanB_Click(object sender, EventArgs e)
         {
+            ////报警布防参数结构体
             CHCNetSDK.NET_DVR_SETUPALARM_PARAM nET_DVR_SETUPALARM_PARAM = new CHCNetSDK.NET_DVR_SETUPALARM_PARAM();
             alarmChan = CHCNetSDK.NET_DVR_SetupAlarmChan_V41(m_lUserID, ref nET_DVR_SETUPALARM_PARAM);
             if (alarmChan == -1)
             {
-                MessageBox.Show(CHCNetSDK.NET_DVR_GetLastError().ToString());
+                MessageBox.Show(CHCNetSDK.NET_DVR_GetLastError().ToString());//报错参数
             }
             else
             {
@@ -623,9 +626,10 @@ namespace GetCarInfo
 
         private void btnAlarmChanEnd_Click(object sender, EventArgs e)
         {
+            //停止布防结构体
             if (!CHCNetSDK.NET_DVR_CloseAlarmChan_V30(alarmChan))
             {
-                MessageBox.Show(CHCNetSDK.NET_DVR_GetLastError().ToString());
+                MessageBox.Show(CHCNetSDK.NET_DVR_GetLastError().ToString());//报错参数
             }
             else
             {
@@ -643,12 +647,32 @@ namespace GetCarInfo
 
         private void btnCancelView_Click(object sender, EventArgs e)
         {
+            //取消预览
             if (!CHCNetSDK.NET_DVR_StopRealPlay(m_lRealHandle))
             {
                 MessageBox.Show(CHCNetSDK.NET_DVR_GetLastError().ToString());
             }
-            picImg.Image = picView.Image = null;
+            picView.Image = null;
             m_lRealHandle = -1;
+            btnView.Enabled = true;
+            btnCancelView.Enabled = false;
+        }
+
+        private void btnCancelPic_Click(object sender, EventArgs e)
+        {
+            //取消截图
+            if (picImg.Image != null)
+            {
+                picImg.Image.Dispose();
+                picImg.Image = null;
+            }
+            //删除截图
+            if (File.Exists(@"C:\Users\EMEWE\Desktop\1.jpg"))
+            {
+                File.Delete(@"C:\Users\EMEWE\Desktop\1.jpg");
+            }
+            btnPic.Enabled = true;
+            btnCancelPic.Enabled = false;
         }
     }
 }

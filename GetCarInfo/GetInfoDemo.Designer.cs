@@ -57,6 +57,7 @@
             this.picView = new System.Windows.Forms.PictureBox();
             this.picImg = new System.Windows.Forms.PictureBox();
             this.btnCancelView = new System.Windows.Forms.Button();
+            this.btnCancelPic = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picView)).BeginInit();
@@ -225,6 +226,7 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.btnCancelPic);
             this.groupBox2.Controls.Add(this.btnCancelView);
             this.groupBox2.Controls.Add(this.btnAlarmChanEnd);
             this.groupBox2.Controls.Add(this.btnAlarmChanB);
@@ -285,7 +287,7 @@
             // 
             // btnPic
             // 
-            this.btnPic.Location = new System.Drawing.Point(616, 25);
+            this.btnPic.Location = new System.Drawing.Point(716, 25);
             this.btnPic.Name = "btnPic";
             this.btnPic.Size = new System.Drawing.Size(74, 33);
             this.btnPic.TabIndex = 15;
@@ -364,13 +366,25 @@
             // 
             // btnCancelView
             // 
-            this.btnCancelView.Location = new System.Drawing.Point(710, 25);
+            this.btnCancelView.Enabled = false;
+            this.btnCancelView.Location = new System.Drawing.Point(596, 25);
             this.btnCancelView.Name = "btnCancelView";
-            this.btnCancelView.Size = new System.Drawing.Size(102, 33);
+            this.btnCancelView.Size = new System.Drawing.Size(80, 33);
             this.btnCancelView.TabIndex = 20;
-            this.btnCancelView.Text = "取消预览截图";
+            this.btnCancelView.Text = "取消预览";
             this.btnCancelView.UseVisualStyleBackColor = true;
             this.btnCancelView.Click += new System.EventHandler(this.btnCancelView_Click);
+            // 
+            // btnCancelPic
+            // 
+            this.btnCancelPic.Enabled = false;
+            this.btnCancelPic.Location = new System.Drawing.Point(796, 25);
+            this.btnCancelPic.Name = "btnCancelPic";
+            this.btnCancelPic.Size = new System.Drawing.Size(74, 33);
+            this.btnCancelPic.TabIndex = 21;
+            this.btnCancelPic.Text = "取消截图";
+            this.btnCancelPic.UseVisualStyleBackColor = true;
+            this.btnCancelPic.Click += new System.EventHandler(this.btnCancelPic_Click);
             // 
             // GetInfoDemo
             // 
@@ -428,6 +442,7 @@
         private System.Windows.Forms.TextBox txtPort;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Button btnCancelView;
+        private System.Windows.Forms.Button btnCancelPic;
     }
 }
 
